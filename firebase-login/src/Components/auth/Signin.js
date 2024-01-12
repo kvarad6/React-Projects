@@ -3,21 +3,54 @@ import React, { useState } from 'react'
 import lock from '../../static/images/avatars/lock.png'
 import traveling from '../../static/images/avatars/traveling.png'
 import { auth } from "../../firebase"
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+// const auth = getAuth();
 
 const Signin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const signIn = (e) => {
-        e.preventDefault();
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredentials) => {
-                console.log(userCredentials)
-            }).catch((error) => {
-                console.log(error)
-            })
 
+    const navigate = useNavigate();
+    const provider = new GoogleAuthProvider();
+
+    const signIn = (flag, e) => {
+        // e.preventDefault();
+
+        console.log("flag", flag)
+        // event.preventDefault();
+
+        
+        // const auth = Firebase.auth();
+        if (flag) {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+
+                    const token = credential.accessToken;
+                    // The signed-in user info.
+                    const user = result.user;
+                    console.log("user", user);
+                    navigate("/");
+
+                    // ...
+                }).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log("error", error)
+                    // ...
+                });
+        } else {
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredentials) => {
+                    console.log(userCredentials)
+                }).catch((error) => {
+                    console.log(error)
+                })
+        }
     }
 
     return (
@@ -29,7 +62,7 @@ const Signin = () => {
                 <Grid item xs={6}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5 }}>
                         <Paper elevation={0} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m: 10 }}>
-                            <form onSubmit={signIn}>
+                            <form onSubmit={signIn(false)}>
                                 <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
                                     <Grid item>
                                         <Avatar alt='lockImage' src={lock}></Avatar>
@@ -79,6 +112,9 @@ const Signin = () => {
                                     </Grid>
                                 </Grid>
                             </form>
+                            <Grid item>
+                                <Button type="button" variant="contained" sx={{ width: 405 }} onClick={() => signIn(true)}>Sign in with Google</Button>
+                            </Grid>
                         </Paper>
                     </Box>
                 </Grid>
