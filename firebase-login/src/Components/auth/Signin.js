@@ -1,9 +1,14 @@
-import { Typography, Box, Paper, TextField, Grid, Button, Avatar, FormControlLabel, FormGroup, Checkbox, Link } from '@mui/material'
+import { Typography, Box, Paper, TextField, Grid, Button, Avatar, FormControlLabel, FormGroup, Checkbox, Link, IconButton } from '@mui/material'
 import React, { useState } from 'react'
 import lock from '../../static/images/avatars/lock.png'
 import traveling from '../../static/images/avatars/traveling.png'
+import signinwithgoogle from '../../static/images/avatars/signinwithgoogle.png'
 import { auth } from "../../firebase"
 import { useNavigate } from "react-router-dom";
+import Divider from '@mui/material/Divider';
+// import List from '@mui/material/List';
+// import ListItem from '@mui/material/ListItem';
+// import ListItemText from '@mui/material/ListItemText';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 // const auth = getAuth();
 
@@ -16,12 +21,8 @@ const Signin = () => {
     const provider = new GoogleAuthProvider();
 
     const signIn = (flag, e) => {
-        // e.preventDefault();
 
         console.log("flag", flag)
-        // event.preventDefault();
-
-        
         // const auth = Firebase.auth();
         if (flag) {
             signInWithPopup(auth, provider)
@@ -107,13 +108,17 @@ const Signin = () => {
                                             <Link>Forgot password?</Link>
                                         </Grid>
                                         <Grid item>
-                                            <Link>Don't have an account? Sign Up</Link>
+                                            <Link href="/signup">Don't have an account? Sign Up</Link>
                                         </Grid>
                                     </Grid>
                                 </Grid>
                             </form>
                             <Grid item>
-                                <Button type="button" variant="contained" sx={{ width: 405 }} onClick={() => signIn(true)}>Sign in with Google</Button>
+                                <Divider variant="middle" sx={{ mt: 3, mb: 2 }} />
+                                <IconButton>
+                                    <Avatar src={signinwithgoogle} variant="square" sx={{ width: 175, height: 40 }} onClick={() => signIn(true)} />
+                                </IconButton>
+                                {/* <Button type="button" variant="contained" sx={{ width: 405 }} onClick={() => signIn(true)}>Sign in with Google</Button> */}
                             </Grid>
                         </Paper>
                     </Box>
